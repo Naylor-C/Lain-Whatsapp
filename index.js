@@ -1,17 +1,29 @@
-const makeWASocket, { DisconnectReason } from "@whiskeysockets/baileys";
-const { Boom } from "@hapi/boom";
+const { makeWASocket, DisconnectReason } = require("@whiskeysockets/baileys");
+const { Boom } = require("@hapi/boom");
+const fs = require("fs");
+
+
+// Variavel Recursivas
+var MText = null;
+var Imglain = "https://i.ibb.co/mrXxJJMW/lain2bgpl0.jpg";
+
 
 async function Main() {
-  const sock = makeWASocket({
+  const { state, saveCreds } = await useMultiFileAuthState("lib/baileys/auth_info_baileys");
+
+  const lain = makeWASocket({
     printQRInTerminal: true,
+    auth: state,
   });
 
-  //Connect	
-  sock.ev.on("connection.update", (update) => {
-    const { connection, lastDisconnect } = update;
+  lain.ev.on("creds.update", saveCreds);
+
+  //Connect the function comes 	U = Update
+  lain.ev.on("connection.update", (U) => {
+    const { connection, lastDisconnect } = U;
     if (connection === "close") {
       const shouldReconnect =
-        (lastDisconnect.error as Boom)?.output?.statusCode !==
+        (lastDisconnect.error)?.output?.statusCode !==
         DisconnectReason.loggedOut;
       console.log(
         "connection closed due to ",
@@ -29,14 +41,46 @@ async function Main() {
   });
 
   //Message	
-  sock.ev.on("messages.upsert", async (m) => {
+  lain.ev.on("messages.upsert", async (m) => {
+    //Definiçoes inicais
+    const M = m.messages[0];
+    const user = M.key.remoteJid; 
+    const pushName = M.pushName;
+    const x = M.message.extendedTextMessage.text
 
-    console.log(JSON.stringify(m, undefined, 2));
 
-    console.log("replying to", m.messages[0].key.remoteJid);
-    await sock.sendMessage(m.messages[0].key.remoteJid, {
-      text: "Hello there!",
-    });
+    switch (Command) {
+
+      case 'menu':
+        MText = `> Lain `;
+        await lain.sendMessage(user,
+          {
+            image: {
+              url: {
+                Imglain
+              },
+              caption: MText,
+            }
+          }, { quoted: M });
+        break;
+
+      case 'menu-play':
+        MText = `lainbida`;
+        await lain.sendMessage(user,
+          {
+            image: {
+              url: {
+                Imglain
+              },
+              caption: MText,
+            }
+          }, { quoted: M });
+        break;
+
+
+    }
+
+   console.log(JSON.stringify(m, undefined, 2));
   });
 }
 // run in main file
