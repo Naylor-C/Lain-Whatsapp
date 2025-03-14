@@ -46,11 +46,13 @@ async function Main() {
     const M = m.messages[0];
     const user = M.key.remoteJid; 
     const pushName = M.pushName;
-    const C = M.message.extendedTextMessage.text? || M.message.conversation;
+    const T = M.message.extendedTextMessage.text? || M.message.conversation;
 
-    const Command = C.toLowerCase();
 
-    switch (Command) {
+    const F = T.startsWith(prefix);
+    const C = F.toLowerCase();
+
+    switch (C) {
 
       case 'menu':
         MText = `> Lain `;
