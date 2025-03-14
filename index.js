@@ -1,4 +1,4 @@
-const { makeWASocket, DisconnectReason } = require("@whiskeysockets/baileys");
+const { makeWASocket, DisconnectReason, useMultiFileAuthState } = require("@whiskeysockets/baileys");
 const { Boom } = require("@hapi/boom");
 const fs = require("fs");
 
@@ -18,7 +18,7 @@ async function Main() {
 
   lain.ev.on("creds.update", saveCreds);
 
-  //Connect the function comes 	U = Update
+  //Connect the function comes 	U = Update//
   lain.ev.on("connection.update", (U) => {
     const { connection, lastDisconnect } = U;
     if (connection === "close") {
@@ -40,14 +40,15 @@ async function Main() {
     }
   });
 
-  //Message	
+  //Message	//
   lain.ev.on("messages.upsert", async (m) => {
     //Definiçoes inicais
     const M = m.messages[0];
     const user = M.key.remoteJid; 
     const pushName = M.pushName;
-    const x = M.message.extendedTextMessage.text
+    const C = M.message.extendedTextMessage.text?.M.message.conversation;
 
+    const Command = C.toLowerCase();
 
     switch (Command) {
 
