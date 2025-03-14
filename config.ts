@@ -1,1 +1,5 @@
-const imgLain = null;
+const P = "/";
+
+const Img = [
+''
+]
