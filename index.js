@@ -42,7 +42,7 @@ async function Main() {
     //Definiçoes inicais
     const M = m.messages[0];
     const user = M.key.remoteJid; 
-    const pushName = M.pushName;
+    const N = M.pushName;
     const T = M.message.extendedTextMessage.text? || M.message.conversation;
 
 
@@ -52,7 +52,15 @@ async function Main() {
     switch (C) {
 
       case 'menu':
-        var MText = `> Lain `;
+        var MText = `> Lain Bem-Vindo ${N} 
+
+       /Main
+       /SubCommand
+       /Config
+       /Help
+       
+       #Fui Criado Por Naylor-C`;
+
         await lain.sendMessage(user,
           {
             image: {
