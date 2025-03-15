@@ -1,11 +1,8 @@
+const { P, MImg } require('config.ts');
+
 const { makeWASocket, DisconnectReason, useMultiFileAuthState } = require("@whiskeysockets/baileys");
 const { Boom } = require("@hapi/boom");
 const fs = require("fs");
-
-
-// Variavel Recursivas
-var MText = null;
-var Imglain = "https://i.ibb.co/mrXxJJMW/lain2bgpl0.jpg";
 
 
 async function Main() {
@@ -49,13 +46,13 @@ async function Main() {
     const T = M.message.extendedTextMessage.text? || M.message.conversation;
 
 
-    const F = T.startsWith(prefix);
+    const F = T.startsWith(P);
     const C = F.toLowerCase();
 
     switch (C) {
 
       case 'menu':
-        MText = `> Lain `;
+        var MText = `> Lain `;
         await lain.sendMessage(user,
           {
             image: {
