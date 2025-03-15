@@ -41,7 +41,7 @@ async function Main() {
   lain.ev.on("messages.upsert", async (m) => {
     //Definiçoes inicais
     const M = m.messages[0];
-    const user = M.key.remoteJid; 
+    const I = M.key.remoteJid; 
     const N = M.pushName;
     const T = M.message.extendedTextMessage.text? || M.message.conversation;
 
@@ -61,7 +61,7 @@ async function Main() {
        
        #Fui Criado Por Naylor-C`;
 
-        await lain.sendMessage(user,
+        await lain.sendMessage(I,
           {
             image: {
               url: {
@@ -72,9 +72,49 @@ async function Main() {
           }, { quoted: M });
         break;
 
-      case 'menu-play':
+      case 'main':
         MText = `lainbida`;
-        await lain.sendMessage(user,
+        await lain.sendMessage(I,
+          {
+            image: {
+              url: {
+                Imglain
+              },
+              caption: MText,
+            }
+          }, { quoted: M });
+        break;
+
+      case 'subcommand:
+        MText = `lainbida`;
+        await lain.sendMessage(I,
+          {
+            image: {
+              url: {
+                Imglain
+              },
+              caption: MText,
+            }
+          }, { quoted: M });
+        break;
+ 
+      case 'config':
+        MText = `lainbida`;
+        await lain.sendMessage(I,
+          {
+            image: {
+              url: {
+                Imglain
+              },
+              caption: MText,
+            }
+          }, { quoted: M });
+        break;
+
+
+      case 'help':
+        MText = `lainbida`;
+        await lain.sendMessage(I,
           {
             image: {
               url: {
@@ -91,5 +131,5 @@ async function Main() {
    console.log(JSON.stringify(m, undefined, 2));
   });
 }
-// run in main file
+
 Main();
