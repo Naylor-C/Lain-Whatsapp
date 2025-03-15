@@ -1,5 +1,5 @@
 const P = "/";
 
-const Img = [
+const MImg = [
 ''
 ]
