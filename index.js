@@ -5,7 +5,7 @@ const { Boom } = require("@hapi/boom");
 const fs = require("fs");
 
 
-async function Main() {
+async function App() {
   const { state, saveCreds } = await useMultiFileAuthState("lib/baileys/auth_info_baileys");
 
   const lain = makeWASocket({
@@ -30,7 +30,7 @@ async function Main() {
       );
       // reconnect if not logged out
       if (shouldReconnect) {
-        connectToWhatsApp();
+          App();
       }
     } else if (connection === "open") {
       console.log("opened connection");
@@ -137,4 +137,4 @@ async function Main() {
   });
 }
 
-Main();
+App();
