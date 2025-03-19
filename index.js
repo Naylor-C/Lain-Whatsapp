@@ -69,9 +69,7 @@ async function App() {
         await lain.sendMessage(I,
           {
             image: {
-              url: {
-                Imglain
-              },
+              url: { MImg[0] },
               caption: MText,
             }
           }, { quoted: M });
@@ -82,9 +80,7 @@ async function App() {
         await lain.sendMessage(I,
           {
             image: {
-              url: {
-                Imglain
-              },
+              url: { MImg },
               caption: MText,
             }
           }, { quoted: M });
