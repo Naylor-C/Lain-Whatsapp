@@ -1,4 +1,4 @@
-const { P, MImg } require('config.ts');
+const { P, MImg } = require('config.ts');
 
 const { makeWASocket, DisconnectReason, useMultiFileAuthState } = require("@whiskeysockets/baileys");
 const { Boom } = require("@hapi/boom");
