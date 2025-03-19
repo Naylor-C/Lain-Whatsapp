@@ -46,12 +46,15 @@ async function Main() {
     const T = M.message.extendedTextMessage.text || M.message.conversation;
 
 
-    const C0 = T.toLowerCase();
-    const F = C.startsWith(P);
-    const C1 = C0.slice(P.length);
+    const F = T.toLowerCase();
+    const F1 = F.startsWith(P);
+
+    if(!F1) return;
+
+    const C = F.slice(P.length);
     
 
-    switch (C1) {
+    switch (C) {
 
       case 'menu':
         var MText = `> Lain Bem-Vindo ${N} 
