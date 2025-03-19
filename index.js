@@ -43,7 +43,7 @@ async function Main() {
     const M = m.messages[0];
     const I = M.key.remoteJid; 
     const N = M.pushName;
-    const T = M.message.extendedTextMessage.text ||M.message.conversation;
+    const T = M.message.extendedTextMessage.text || M.message.conversation;
 
 
     const F = T.startsWith(P);
