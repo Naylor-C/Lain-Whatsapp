@@ -46,8 +46,9 @@ async function Main() {
     const T = M.message.extendedTextMessage.text || M.message.conversation;
 
 
-    const F = T.startsWith(P);
-    const C = F.toLowerCase();
+    const C = T.toLowerCase();
+    const F = C.startsWith(P);
+    
 
     switch (C) {
 
