@@ -90,7 +90,7 @@ async function App() {
           }, { quoted: M });
         break;
 
-      case 'subcommand:
+      case 'subcommand':
         MText = `lainbida`;
         await lain.sendMessage(I,
           {
