@@ -1,16 +1,32 @@
-
 const config = require('./config.json');
 const fs = require("fs");
 const path = require("path");
 const P = "/"; // Prefixo de comando
 
-const { makeWASocket, 
-Browsers, DisconnectReason, useMultiFileAuthState
+const { makeWASocket, Browsers, DisconnectReason, useMultiFileAuthState
 } = require("@whiskeysockets/baileys");
+ 
+const commands = new Map();
+const foldersPath = path.join(__dirname, 'Commands');
+const commandFolders = fs.readdirSync(foldersPath);
 
-const Img = "https://i.ibb.co/mrXxJJMW/lain2bgpl0.jpg";
-const Lain = "https://naylor-c.github.io/Lain/"; 
-const Naylor = "https://naylor-c.github.io/Naylor-C/";
+
+for (const folder of commandFolders) {
+  const commandsPath = path.join(foldersPath, folder);
+  const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+  for (const file of commandFiles) {
+     const filePath = path.join(commandsPath, file);
+     const command = require(filePath);
+    if ('data' in command && 'execute' in command) {
+     commands.set(command.data.name, command);
+    }   
+    else {
+     console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+    }
+  }
+}
+
+let Text = "";
 
 async function Y () {
   const { state, saveCreds } = await useMultiFileAuthState("lib/baileys/auth_info_baileys");
@@ -36,45 +52,24 @@ async function Y () {
     }
   });
 
+
+  // Body//
   lain.ev.on("messages.upsert", async (x) => {
     try {
       const M = x.messages[0];
       if (!M.message) return;
-
+ 
       const I = M.key.remoteJid;
       const N = M.pushName;
       const T = M.message?.extendedTextMessage?.text || M.message?.conversation || "";
       
       if (!T.startsWith(P)) return;
-
+  
       const C = T.slice(1).toLowerCase(); 
-      let Text = "";
+      
 
       switch (C) {
 
-        case 'menu':
-          Text = `> Bem-Vindo ${N}\n> /Lain: ${Lain}\n\n/Command\n/Config\n/Help\n\n> #Fui Criado Por ${Naylor}:`;
-          break;
-          
-        case 'Lain':
-          Text = `/Naylor-Institute | /IN\n/Eletroc`;
-          break;
-
-        case 'command':
-          Text = `> Command Function:\n/Download`;
-          break;
-
-        case 'config':
-          Text = `> Main function:\n/Ban\n/Unban\n/Demote\n/Promote`; 
-          break;
-
-        case 'help':
-          Text = ``;
-          break;
-
-         case 'download':
-          Text = ``
-          break
         case 'bem-vindo':
           // Verifica se é um grupo
           if (!I.endsWith('@g.us')) {
@@ -90,19 +85,21 @@ async function Y () {
           }
           break;
 
-
-
         default:
-          return;
-      }
-
-      await lain.sendMessage(I, 
-        { 
-          image: { 
-            url: Img 
-          }, 
-          caption: Text,  
-        }, { quoted: M });
+          // Check if it's a registered command
+          if (commands.has(C)) {
+            const command = commands.get(C);
+            try {
+              await command.execute({ lain, M, I, N, T, config, });
+              return;
+            } catch (error) {
+              console.error(`Error executing command ${C}:`, error);
+              Text = "❌ Ocorreu um erro ao executar o comando.";
+            }
+          } else {
+            return; // Unknown command, do nothing
+          }
+      } //end Switch
       
     } catch (error) {
       console.error("Error processing message:", error);
@@ -113,7 +110,7 @@ async function Y () {
   lain.ev.on("group-participants.update", async (x) => {
     try {
       const { id, participants, action } = x;
-      console.log("ID do grupo:", id);
+      console.log("Grupo-Infos:", x);
 
       // Verifica se o grupo está na lista de permitidos
       if (!config.allowedGroups.includes(id)) return;
@@ -122,25 +119,28 @@ async function Y () {
         for (let participant of participants) {
           let number = participant.replace("@s.whatsapp.net", "");
 
-          let groupDescription;
+          let D;
           try {
-            const groupMetadata = await lain.groupMetadata(id);
-            groupDescription = groupMetadata.desc || "Este grupo não tem uma descrição.";
-          } catch (error) {
-            console.log("Erro ao obter a descrição do grupo:", error);
-            groupDescription = "Não foi possível carregar a descrição.";
+            const I = await lain.profilePictureUrl(id, 'image');
+            const M = await lain.groupMetadata(id);
+            D = M.desc || "Este grupo não tem uma descrição.";
+          } catch (e) {
+            console.log("Erro ao obter a descrição do grupo:", e);
+            D = "Não foi possível carregar a descrição.";
           }
 
-          const welcomeMessage = `👋 Olá *@${number}*, bem-vindo(a) ao grupo! 🎉\n\n📌 *:* ${groupDescription}`;
+          Text = `Bem-vindo *@${number}*, ao $! 🎉\n\n📌 *:* ${D}`;
           
+          console.log(M);
           await lain.sendMessage(id, { 
-            text: welcomeMessage, 
+            image: { url: I },
+            caption: Text,
             mentions: [participant] 
           });
         }
       }
-    } catch (error) {
-      console.error("Error in group update handler:", error);
+    } catch (e) {
+      console.error("Error in group update handler:", e);
     }
   });
 }
